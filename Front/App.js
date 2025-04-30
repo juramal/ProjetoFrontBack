@@ -12,7 +12,7 @@ export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
   const [mensagem, setMensagem] = useState('');
 
-  /*
+  
   useEffect(() => {
     fetch('http://10.68.153.71:3000/')
       .then(response => response.json())
@@ -22,10 +22,10 @@ export default function App() {
       })
       .catch(error => console.error('Erro:', error));
   }, []);
-  */
+  
 
   const addUser = () => {
-    fetch('http://10.68.153.71:3000/add/', {
+    fetch('http://192.168.1.124:3000/add/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
@@ -58,7 +58,7 @@ export default function App() {
   };
 
   const Exibir = () => {
-    fetch('http://10.68.153.71:3000/')
+    fetch('http://192.168.1.124:3000/')
       .then(response => response.json())
       .then(data => {
         console.log('Usuários Exibidos:', data);
@@ -68,7 +68,7 @@ export default function App() {
   };
 
   const Atualizar = (id) => {
-    fetch(`http://10.68.153.71:3000/update/${id}`, {
+    fetch(`http://192.168.1.124:3000/update/${id}`, {
       method: 'PUT',
       body: JSON.stringify({ name: 'xx' }),
       headers: {
@@ -81,15 +81,30 @@ export default function App() {
   };
 
   const Deletar = (id) => {
-    fetch(`http://10.68.153.71:3000/delete/${id}`, {
+    fetch(`http://192.168.1.124:3000/delete/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
       },
-    })
+    })    
       .then(response => response.json())
-      .then(data => console.log('Usuário Deletado:', data))
+      .then(data => {
+        console.log('Usuário Deletado:', data);
+        // Atualiza a lista após deletar
+        setCampos(prevCampos => prevCampos.filter(user => user._id !== id));
+        setCampos(novaLista); // Atualiza estado visivelmente
+        setCampos(data);
+
+        //
+        fetch('http://192.168.1.124:3000/')
+      .then(response => response.json())
+      .then(data => {
+        console.log('Usuários Exibidos:', data);
+        setCampos(data);
+      })
       .catch(error => console.error('Erro:', error));
+      })
+      .catch(error => console.error('Erro:', error));      
   };
 
   return (     

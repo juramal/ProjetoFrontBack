@@ -4,12 +4,13 @@ import { View, Pressable, Text } from "react-native";
 const DadosDeletado = (props) => {
 
     const Delete = (id) => {
-        let url = `http://10.68.153.71:3000/delete/${id}`;
+        let url = `http://192.168.1.124:3000/delete/${id}`;
         console.log(url);
         fetch(url, {
           method: 'DELETE',
         }).then((response) => response.json())
           .then((json) => console.log(json));
+          
       }
 
     return (

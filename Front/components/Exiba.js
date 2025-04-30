@@ -8,7 +8,7 @@ const DadoExiba = ({ campo, setCampo }) => {
   const [mensagem, setMensagem] = useState('');
   
   useEffect(() => {
-    fetch('http://10.68.153.71:3000/')
+    fetch('http://192.168.1.124:3000/')
       .then(response => response.json())
       .then(data => {
         console.log('Usuários Exibidos:', data);
@@ -19,7 +19,7 @@ const DadoExiba = ({ campo, setCampo }) => {
     
 
   const handleAtualizar = (id) => {
-    fetch(`http://10.68.153.71:3000/update/${id}`, {
+    fetch(`http://192.168.1.124:3000/update/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
@@ -42,7 +42,7 @@ const DadoExiba = ({ campo, setCampo }) => {
   };
 
   const handleDeletar = (id) => {
-    fetch(`http://10.68.153.71:3000/delete/${id}`, {
+    fetch(`http://192.168.1.124:3000/delete/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',

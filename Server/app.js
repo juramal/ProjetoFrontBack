@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 ///--------------------MONGOOSE------------------
 
-let url = 'mongodb://localhost:27017/dsm';
+let url = 'mongodb+srv://jramal:Casa123456@dsm.cgxgp0x.mongodb.net/';
 
 mongoose.connect(url)
 .then(
