@@ -14,7 +14,7 @@ export default function App() {
 
   
   useEffect(() => {
-    fetch('http://10.68.153.71:3000/')
+    fetch('http://192.168.1.124:3000/')
       .then(response => response.json())
       .then(data => {
         console.log('Usuários Exibidos:', data);
@@ -78,34 +78,16 @@ export default function App() {
       .then(response => response.json())
       .then(data => console.log('Usuários Atualizados:', data))
       .catch(error => console.error('Erro:', error));
-  };
+  };  
 
-  const Deletar = (id) => {
-    fetch(`http://192.168.1.124:3000/delete/${id}`, {
+  const Delete = (id) => {
+    let url = `http://192.168.1.124:3000/delete/${id}`;
+    console.log(url);
+    fetch(url, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-    })    
-      .then(response => response.json())
-      .then(data => {
-        console.log('Usuário Deletado:', data);
-        // Atualiza a lista após deletar
-        setCampos(prevCampos => prevCampos.filter(user => user._id !== id));
-        setCampos(novaLista); // Atualiza estado visivelmente
-        setCampos(data);
-
-        //
-        fetch('http://192.168.1.124:3000/')
-      .then(response => response.json())
-      .then(data => {
-        console.log('Usuários Exibidos:', data);
-        setCampos(data);
-      })
-      .catch(error => console.error('Erro:', error));
-      })
-      .catch(error => console.error('Erro:', error));      
-  };
+    }).then((response) => response.json())
+      .then((json) => console.log(json));
+  }
 
   return (     
     //  Mudança: usamos SafeAreaView para proteger a interface em celulares com notch

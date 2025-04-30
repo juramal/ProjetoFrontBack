@@ -10,7 +10,7 @@ const DadosDeletado = (props) => {
           method: 'DELETE',
         }).then((response) => response.json())
           .then((json) => console.log(json));
-          
+          setCampo(prev => prev.filter(item => item._id !== id)); // remove do estado
       }
 
     return (

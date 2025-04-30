@@ -15,7 +15,7 @@ const DadoExiba = ({ campo, setCampo }) => {
         setCampo(data);
       })
       .catch(error => console.error('Erro:', error));
-  }, [campo]);
+  }, []);
     
 
   const handleAtualizar = (id) => {
@@ -52,10 +52,9 @@ const DadoExiba = ({ campo, setCampo }) => {
       .then(data => {
         console.log('Deletado:', data);
         setMensagem('Usuário excluído com sucesso ✅');
-        setModalVisible(true);
-
         // Atualiza a lista removendo o item
-       
+        setCampo(prev => prev.filter(item => item._id !== id));
+        setModalVisible(true);       
 
         // Fecha o modal
         setTimeout(() => {
