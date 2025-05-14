@@ -1,92 +1,15 @@
-"use client"
-import React, { useState } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from "react-native";
-import { useEffect } from 'react';
+import React from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import Editar from './Editar';
+import Delete from './Delete';
 
-const DadoExiba = ({ campo, setCampo }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [mensagem, setMensagem] = useState('');
-  
-  useEffect(() => {
-    fetch('http://192.168.1.124:3000/')
-      .then(response => response.json())
-      .then(data => {
-        console.log('Usuários Exibidos:', data);
-        setCampo(data);
-      })
-      .catch(error => console.error('Erro:', error));
-  }, []);
-    
-
-  const handleAtualizar = (id) => {
-    fetch(`http://192.168.1.124:3000/update/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-      body: JSON.stringify({ name: 'Novo Nome' }),
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Atualizado:', data);
-        setMensagem('Usuário atualizado com sucesso ✅');
-        setModalVisible(true);
-        setTimeout(() => setModalVisible(false), 3000);
-      })
-      .catch(err => {
-        console.error('Erro:', err);
-        setMensagem('Erro ao atualizar usuário ❌');
-        setModalVisible(true);
-        setTimeout(() => setModalVisible(false), 3000);
-      });
-  };
-
-  const handleDeletar = (id) => {
-    fetch(`http://192.168.1.124:3000/delete/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Deletado:', data);
-        setMensagem('Usuário excluído com sucesso ✅');
-        // Atualiza a lista removendo o item
-        setCampo(prev => prev.filter(item => item._id !== id));
-        setModalVisible(true);       
-
-        // Fecha o modal
-        setTimeout(() => {
-          setModalVisible(false);
-        }, 3000);
-      })
-      .catch(err => {
-        console.error('Erro:', err);
-        setMensagem('Erro ao excluir usuário ❌');
-        setModalVisible(true);
-        setTimeout(() => setModalVisible(false), 3000);
-      });
-  };
-
+const Exiba = ({ usuarios, atualizarLista }) => {
   return (
     <View style={styles.container}>
-      {/* Modal de Feedback */}
-      <Modal
-        transparent={true}
-        animationType="fade"
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>{mensagem}</Text>
-          </View>
-        </View>
-      </Modal>
+      <Text style={styles.title}>Lista de Usuários</Text>
 
       <FlatList
-        data={campo}
+        data={usuarios}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <View style={styles.card}>
@@ -103,46 +26,45 @@ const DadoExiba = ({ campo, setCampo }) => {
             <Text style={styles.value}>{item.idade}</Text>
 
             <View style={styles.buttonGroup}>
-              <TouchableOpacity
-                style={[styles.button, styles.updateButton]}
-                onPress={() => handleAtualizar(item._id)}
-              >
-                <Text style={styles.buttonText}>Atualizar</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.button, styles.deleteButton]}
-                onPress={() => handleDeletar(item._id)}
-              >
-                <Text style={styles.buttonText}>Excluir</Text>
-              </TouchableOpacity>
+              <Editar
+                id={item._id}
+                name={item.name}
+                email={item.email}
+                idade={item.idade}
+                atualizarLista={atualizarLista}
+              />
+              <Delete id={item._id} atualizarLista={atualizarLista} />
             </View>
           </View>
         )}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>Nenhum usuário cadastrado</Text>
+        }
       />
     </View>
   );
 };
 
-export default DadoExiba;
+export default Exiba;
 
 const styles = StyleSheet.create({
   container: {
-    width: '30%',
+    width: '100%',
     paddingBottom: 10,
   },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    color: '#333',
+  },
   card: {
-    backgroundColor: '#e0f7fa',
+    backgroundColor: '#f9f8b7',
     padding: 15,
     marginBottom: 15,
-    borderRadius: 12,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+    borderRadius: 10,
+    elevation: 2,
+    borderColor: 'black',
   },
   label: {
     fontWeight: 'bold',
@@ -155,40 +77,14 @@ const styles = StyleSheet.create({
   buttonGroup: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginTop: 10,
     gap: 10,
+    marginTop: 10,
   },
-  button: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-  },
-  updateButton: {
-    backgroundColor: '#2196F3',
-  },
-  deleteButton: {
-    backgroundColor: '#f44336',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-    alignItems: 'center',
-  },
-  modalText: {
+  emptyText: {
     fontSize: 16,
+    color: '#999',
     textAlign: 'center',
-    color: '#333',
+    marginTop: 20,
+    fontStyle: 'italic',
   },
 });
